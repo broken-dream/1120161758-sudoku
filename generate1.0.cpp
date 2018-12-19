@@ -15,7 +15,6 @@ unsigned int cnt;
 unsigned int n;
 FILE *res;
 bool falg_gene;
-
 void make()
 {
 	for (int row = 0;row < 9;row++) {
@@ -23,39 +22,45 @@ void make()
 			mp[row][(col * 2 + shift[row]) % 18] = '0' + first_line[col];
 		}
 	}
-
-	for (int com = 0;com < 36;com++) {
-		int idx1 = com / 6;
-		int idx2 = com % 6;
-		for (int row = 0;row < 3;row++) {
-			fputs(mp[row], res);
-			//fputc('\n', res);
-			//puts(mp[row]);
+	for (int out = 0;out < 2;out++) {
+		for (int com = 0;com < 36;com++) {
+			int idx1 = com / 6;
+			int idx2 = com % 6;
+			for (int row = 0;row < 3;row++) {
+				fwrite(mp[row], sizeof(char), 18, res);
+				//fputs(mp[row], res);
+				//fputc('\n', res);
+				//puts(mp[row]);
+			}
+			for (int row = 0;row < 3;row++) {
+				fwrite(mp[permutation_change1[idx1][row]], sizeof(char), 18, res);
+				//fputs(mp[permutation_change1[idx1][row]], res);
+				//fputc('\n', res);
+				//puts(mp[permutation_change1[idx1][row]]);
+			}
+			for (int row = 0;row < 2;row++) {
+				fwrite(mp[permutation_change2[idx2][row]], sizeof(char), 18, res);
+				//fputs(mp[permutation_change2[idx2][row]], res);
+				//fputc('\n', res);
+				//puts(mp[permutation_change2[idx2][row]]);
+			}
+			cnt++;
+			if (cnt == n) {
+				mp[permutation_change2[idx2][2]][17] = '\0';
+				fwrite(mp[permutation_change2[idx2][2]], sizeof(char), 18, res);
+				//fputs(mp[permutation_change2[idx2][2]], res);
+				//mp[permutation_change2[idx2][2]][17] = '\n';
+				return;
+			}
+			//puts(mp[permutation_change2[idx2][2]]);
+			//fputs(mp[permutation_change2[idx2][2]], res);
+			fwrite(mp[permutation_change2[idx2][2]], sizeof(char), 18, res);
+			fputc('\n', res);
+			//putchar('\n');
 		}
-		for (int row = 0;row < 3;row++) {
-			fputs(mp[permutation_change1[idx1][row]], res);
-			//fputc('\n', res);
-			//puts(mp[permutation_change1[idx1][row]]);
-		}
-		for (int row = 0;row < 2;row++) {
-			fputs(mp[permutation_change2[idx2][row]], res);
-			//fputc('\n', res);
-			//puts(mp[permutation_change2[idx2][row]]);
-		}
-		cnt++;
-		if (cnt == n) {
-			mp[permutation_change2[idx2][2]][17] = '\0';
-			fputs(mp[permutation_change2[idx2][2]], res);
-			//mp[permutation_change2[idx2][2]][17] = '\n';
-			return;
-		}
-		//puts(mp[permutation_change2[idx2][3]]);
-		fputs(mp[permutation_change2[idx2][3]], res);
-		fputc('\n',res);
-		//putchar('\n');
 	}
-
 }
+
 void generate()
 {
 	do {
@@ -66,13 +71,13 @@ void generate()
 			mp[0][col * 2] = first_line[col];
 		}
 		make();
-
 	} while (next_permutation(first_line + 1, first_line + 9));
+
 }
 void init()
 {
 	cnt = 0;
-    res = fopen("out.txt", "w");
+	res = fopen("out1.txt", "w");
 	//freopen("out.txt", "w+", stdout);
 	for (int row = 0;row < 9;row++) {
 		for (int col = 0;col < 17;col++) {
